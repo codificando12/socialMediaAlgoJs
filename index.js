@@ -14,14 +14,21 @@ class User {
     }
 }
 
+class timeLine extends User {
+    constructor (name, textArea) {
+        super(name);
+        this.textArea = textArea
+        }
+}
+
 function login () {
     const username = usernameInput.value;
     const password = passwordInput.value;
-
     for (let i = 0; i < users.length; i++) {
         if (users[i].name === username && users[i].password === password) {
+            sessionStorage.setItem("username", username)
             window.location.replace("welcome.html");
-            break;
+            return;
         }
         else if (users[i].name !== username || users[i.password !== password]) {
             const wrongUserPass = document.createElement("div");
@@ -61,12 +68,38 @@ function signin () {
     console.log(users)
 }
 
+function postTweet () {
+   const tweetText = tweet.value;
+   const newTweet = new timeLine(helloUser, tweetText);
+   userTimeLine.push(newTweet);
+   tweet.value = ""
+   renderTweets()
+    console.log(userTimeLine)
+}
 
+function renderTweets () {
+    tweetsContainer.innerHTML = "";
+    for (i = 0; i < userTimeLine.length; i++) {
+        const newTweetContainer = document.createElement("div");
+        const tweetAuthor = document.createElement("h4");
+        const tweetContent = document.createElement("p");
+    
+        tweetAuthor.textContent = userTimeLine[i].name
+        newTweetContainer.appendChild(tweetAuthor);
+    
+        tweetContent.textContent = userTimeLine[i].textArea
+        newTweetContainer.appendChild(tweetContent);
+        tweetsContainer.appendChild(newTweetContainer);
+        
+    }
+}
 
 const form = document.querySelector("form");
 const usernameInput = document.querySelector("#username");
 const passwordInput = document.querySelector("#password");
 const loginButton = document.querySelector(".login-button");
+
+
 
 const siginForm = document.querySelector(".sigin-form");
 const newUsername = document.querySelector("#new-username");
@@ -75,12 +108,15 @@ const newRePassword = document.querySelector("#new-repassword");
 const signinButton = document.querySelector(".signin-button");
 
 let users = [];
+let userTimeLine = [{name: "Antonio", textArea: "Como"}];
 
 users.push(new User("juan", "hola"));
+
+
 if (loginButton) {
     loginButton.addEventListener("click", (event) => {
         event.preventDefault();
-        login();
+        login(username, password);
     });
 }
 
@@ -92,5 +128,23 @@ if (signinButton) {
 
 }
 
+const helloUser = sessionStorage.getItem("username");
+const welcomeTitleContainer = document.querySelector(".welcome-content");
+welcomeTitle = document.createElement("h1");
+welcomeTitleContainer.appendChild(welcomeTitle)
+welcomeTitle.textContent = `Welcome back! ${helloUser}`
 
+const tweet = document.querySelector("#tweet");
+const postTweetButton = document.querySelector(".post-tweet")
+const tweetsContainer = document.querySelector(".tweets-container");
+
+renderTweets()
+
+if (postTweetButton) {
+    postTweetButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        postTweet();
+    });
+
+}
 
